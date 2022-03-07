@@ -1,4 +1,8 @@
+const dotenv = require('dotenv')
+dotenv.config()
+
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const path = require("path")
 
 module.exports = {
@@ -11,12 +15,17 @@ module.exports = {
     filename: "bundle.[hash].js"
   },
   devServer: {
+    proxy: {
+        "/api": {
+            target: `http://localhost:${process.env.API_PORT}`
+        }
+    },
     compress: true,
-    port: 8080,
+    port: process.env.UI_PORT,
     hot: true,
     static: './dist',
     historyApiFallback: true,
-    open: true
+    open: false
   },
   module: {
     rules: [
@@ -28,9 +37,25 @@ module.exports = {
         }
       },
       {
+          test: /\.less$/,
+          use: [
+              'style-loader',
+              'css-loader',
+              'less-loader'
+          ]
+      },
+      {
         test:/\.css$/,
-        exclude: /node_modules/,
-        use: 'css-loader'
+        use: [
+            { loader: MiniCssExtractPlugin.loader },
+            { loader: 'css-loader' }
+        ]
+      },
+      {
+        test:/\.scss$/,
+        use: [
+            { loader: 'sass-loader' }
+        ]
       },
       {
         test: /\.png$/,
@@ -46,6 +71,7 @@ module.exports = {
       template: __dirname + "/public/index.html",
       filename: "index.html"
     }),
+    new MiniCssExtractPlugin()
   ],
   mode: "development",
   devtool: 'inline-source-map',

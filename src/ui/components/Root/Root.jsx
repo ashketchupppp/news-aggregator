@@ -1,9 +1,23 @@
 import React from 'react'
-import './Root.css'
+import { Card } from '@blueprintjs/core'
+import { Flex, Box } from 'reflexbox'
+
+import './Root.scss'
 
 function Root() {
   return (
-    <p>Hi</p>
+    <>
+        <div className='bp3-dark'>
+            <Flex flexWrap='wrap'>
+                <Box width={[1, 1/2]}>
+                    <Card className='article' />
+                </Box>
+                <Box width={[1, 1/2]}>
+                    <Card className='article' />
+                </Box>
+            </Flex>
+        </div>
+    </>
   )
 }
 
